@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Chatroom</title>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
-  <ul id="messages"></ul>
-  <form id="message-form">
-    <input id="message-input" autocomplete="off" /><button>Send</button>
-  </form>
-  <script>
-    const socket = io();
+  <head>
+    <meta charset="UTF-8" />
+    <title>Socket.IO Chatroom</title>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+  </head>
+  <body>
+    <div id="chat">
+      <ul id="messages"></ul>
+      <form id="message-form">
+        <input id="message-input" autocomplete="off" />
+        <button>Send</button>
+      </form>
+    </div>
 
-    $('#message-form').submit((e) => {
-      e.preventDefault();
-      const msg = $('#message-input').val();
-      socket.emit('message', msg);
-      $('#message-input').val('');
-    });
+    <script>
+      const socket = io();
 
-    socket.on('message', (msg) => {
-      $('#messages').append($('<li>').text(msg));
-    });
-  </script>
-</body>
+      const form = document.getElementById("message-form");
+      const input = document.getElementById("message-input");
+      const messages = document.getElementById("messages");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const message = input.value;
+        input.value = "";
+        socket.emit("chat message", message);
+      });
+
+      socket.on("chat message", (message) => {
+        const li = document.createElement("li");
+        li.textContent = message;
+        messages.appendChild(li);
+      });
+    </script>
+  </body>
 </html>
